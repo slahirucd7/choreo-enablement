@@ -60,7 +60,7 @@ contactsInput) returns ContactsOutput|error? {
 }
 
 
-service / on new http:Listener(9020) {
+service /abc on new http:Listener(9020) {
 
     # A resource for generating greetings.
     # + name - the input string name
