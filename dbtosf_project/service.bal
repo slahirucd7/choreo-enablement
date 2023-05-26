@@ -59,6 +59,49 @@ contactsInput) returns ContactsOutput|error? {
     }
 }
 
+
+service / on new http:Listener(9020) {
+
+    # A resource for generating greetings.
+    # + name - the input string name
+    # + return - string name with hello message or error
+    resource function get greeting(string name) returns string|error {
+        // Send a response back to the caller.
+        if name is "" {
+            return error("name should not be empty!");
+        }
+        return "Hello, " + name;
+    }
+
+    # A resource for transforming contacts
+    # + contactsInput - the input contacts
+    # + return - transformed contacts or error
+    resource function post contacts(@http:Payload ContactsInput
+contactsInput) returns ContactsOutput|error? {
+        ContactsOutput contactsOutput = transform(contactsInput);
+        return contactsOutput;
+    }
+# A resource for fetching contacts from salesforce 
+    # + return - Contacts collection or error
+    resource function get contacts() returns ContactsOutput|error? {
+
+        salesforce:SoqlResult|salesforce:Error soqlResult = salesforceEp->getQueryResult("SELECT Id,FirstName,LastName,Email,Phone FROM Contact");
+
+        if (soqlResult is salesforce:SoqlResult) {
+
+            json results = soqlResult.toJson();
+
+            ContactsInput salesforceContactsResponse = check results.cloneWithType(ContactsInput);
+
+            ContactsOutput contacts = transform(salesforceContactsResponse);
+
+            return contacts;
+
+        } else {
+            return error(soqlResult.message());
+        }
+    }
+}
 type Attributes record {
     string 'type;
     string url;
@@ -102,3 +145,4 @@ function transform(ContactsInput contactsInput) returns ContactsOutput
             id: recordsItem.Id
         }
 };
+type Record record {};
