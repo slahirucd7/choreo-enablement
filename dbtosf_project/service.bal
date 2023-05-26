@@ -162,3 +162,5 @@ function transform(ContactsInput contactsInput) returns ContactsOutput
         }
 };
 type Record record {};
+
+// simple change
