@@ -57,6 +57,14 @@ contactsInput) returns ContactsOutput|error? {
             return error(soqlResult.message());
         }
     }
+
+    resource function get greeting1A(string name) returns string|error {
+        // Send a response back to the caller.
+        if name is "" {
+            return error("name should not be empty!");
+        }
+        return "Hello, " + name;
+    }
 }
 
 
@@ -66,6 +74,14 @@ service /abc on new http:Listener(9020) {
     # + name - the input string name
     # + return - string name with hello message or error
     resource function get greeting1234(string name) returns string|error {
+        // Send a response back to the caller.
+        if name is "" {
+            return error("name should not be empty!");
+        }
+        return "Hello, " + name;
+    }
+
+    resource function get greeting2A(string name) returns string|error {
         // Send a response back to the caller.
         if name is "" {
             return error("name should not be empty!");
